@@ -1,6 +1,5 @@
-# frozen_string_literal: true
-
 require_relative "futureshop/version"
+require_relative "futureshop/client"
 
 module Futureshop
   class Error < StandardError; end
