@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = "TODO: Write a longer description or delete this line."
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.required_ruby_version = ">= 2.4.0"
+  spec.license       = "AGPL-3.0-or-later"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
