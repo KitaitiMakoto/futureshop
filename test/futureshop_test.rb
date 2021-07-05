@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "helper"
 
 class FutureshopTest < Test::Unit::TestCase
   test "VERSION" do
