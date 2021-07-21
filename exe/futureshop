@@ -1,3 +1,121 @@
 #!/usr/bin/env ruby
 
+require "optparse"
+require "optparse/time"
 require "futureshop"
+
+SUPPORTED_COMMANDS = %w[orders]
+
+def main(argv)
+  global_options = parse_global_options(argv)
+  subcommand = argv.shift
+  abort "Specify subcommand" unless subcommand
+  abort "Unknown subcommand: #{subcommand}" unless SUPPORTED_COMMANDS.include?(subcommand)
+  case subcommand
+  when "orders"
+    orders global_options, argv
+  end
+end
+
+def parse_options(argv)
+  options = {}
+  OptionParser.new {|opt|
+    yield opt
+  }.order!(argv, into: options)
+  options
+end
+
+def parse_global_options(argv)
+  parse_options(argv) {|opt|
+    opt.on "--verbose" do
+      $VERBOSE = true
+    end
+  }
+end
+
+def orders(global_options, argv)
+  options = {format: "json"}
+  options.update(parse_options(argv) {|opt|
+    opt.on "-f", "--format=FORMAT", ["json", "csv"]
+    opt.on "--order-date-start=DATE", Time
+    opt.on "--order-date-end=DATE", Time
+  })
+  require "csv" if options[:format] == "csv"
+
+  client.each_order(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"]).with_index do |row, index|
+    sleep 1 # FIXME: Delegate to client
+    order = client.order(row["orderNo"])
+    case options[:format]
+    when "json"
+      puts order.to_json
+    when "csv"
+      headers = []
+      CSV $stdout do |csv|
+        if index == 0
+          csv << aggregate_headers(order)
+        end
+        raise "Multiple shipmentList. orderNo: #{order["orderNo"]}" if order["shipmentList"].length > 1
+        order["shipmentList"].each do |shipment|
+          shipment["productList"].each do |product|
+            csv << order.each_value.with_object([]) {|value, values|
+              case value
+              when Hash
+                value.each_value do |v|
+                  values << v
+                end
+              when Array
+                # only shipmentList is an Array and its length is 0
+                shipment.each_value do |v|
+                  case v
+                  when Hash
+                    v.each_value do |ov|
+                      values << ov
+                    end
+                  when Array
+                    product.each_value do |v|
+                      v = v.join("/") if v.kind_of? Array
+                      values << v
+                    end
+                  else
+                    values << v
+                  end
+                end
+              else
+                values << value
+              end
+            }
+          end
+        end
+      end
+    end
+  end
+end
+
+def client
+  Futureshop::Client.new(
+    shop_key: ENV["FUTURESHOP_SHOP_KEY"],
+    client_id: ENV["FUTURESHOP_CLIENT_ID"],
+    client_secret: ENV["FUTURESHOP_CLIENT_SECRET"],
+    api_domain: ENV["FUTURESHOP_API_DOMAIN"]
+  )
+end
+
+def aggregate_headers(obj, headers = [])
+  obj.each_pair do |key, value|
+    unless %w[buyerInfo addressInfo shippingInfo shipmentList productList].include? key
+      headers << key
+    end
+    case value
+    when Hash
+      headers.concat aggregate_headers(value).collect {|header| "#{key}.#{header}"}
+    when Array
+      sample = value[0]
+      if sample
+        headers.concat aggregate_headers(sample).collect {|header| "#{key}.#{header}"}
+      end
+    end
+  end
+  headers
+end
+
+main ARGV
