@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    futureshop orders -fcsv --order-date-start=2016-07-05 --order-date-end=2021-07-20 > orders.2021-07-20.csv
 
 ## Development
 
