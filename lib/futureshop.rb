@@ -11,7 +11,7 @@ module Futureshop
       require "csv" if format == "csv"
 
       client.each_order(**options).with_index do |row, index|
-        sleep 1 # FIXME: Delegate to client
+        sleep 1 unless ENV["NO_THROTTLE"] # FIXME: Delegate to client
         order = client.order(row["orderNo"])
         case format
         when "json"

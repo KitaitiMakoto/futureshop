@@ -51,7 +51,9 @@ class FutureshopTest < Test::Unit::TestCase
       lines << line
     }
 
+    ENV["NO_THROTTLE"] = "1"
     Futureshop.orders(format: "csv")
+    ENV.delete "NO_THROTTLE"
     assert_equal lines.length, 21
   end
 end
