@@ -40,55 +40,7 @@ def orders(global_options, argv)
     opt.on "--order-date-start=DATE", Time
     opt.on "--order-date-end=DATE", Time
   })
-  require "csv" if options[:format] == "csv"
-
-  client.each_order(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"]).with_index do |row, index|
-    sleep 1 # FIXME: Delegate to client
-    order = client.order(row["orderNo"])
-    case options[:format]
-    when "json"
-      puts order.to_json
-    when "csv"
-      headers = []
-      CSV $stdout do |csv|
-        if index == 0
-          csv << aggregate_headers(order)
-        end
-        raise "Multiple shipmentList. orderNo: #{order["orderNo"]}" if order["shipmentList"].length > 1
-        order["shipmentList"].each do |shipment|
-          shipment["productList"].each do |product|
-            csv << order.each_value.with_object([]) {|value, values|
-              case value
-              when Hash
-                value.each_value do |v|
-                  values << v
-                end
-              when Array
-                # only shipmentList is an Array and its length is 0
-                shipment.each_value do |v|
-                  case v
-                  when Hash
-                    v.each_value do |ov|
-                      values << ov
-                    end
-                  when Array
-                    product.each_value do |v|
-                      v = v.join("/") if v.kind_of? Array
-                      values << v
-                    end
-                  else
-                    values << v
-                  end
-                end
-              else
-                values << value
-              end
-            }
-          end
-        end
-      end
-    end
-  end
+  Futureshop.orders(**options)
 end
 
 def client

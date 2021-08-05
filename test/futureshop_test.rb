@@ -30,4 +30,22 @@ class FutureshopTest < Test::Unit::TestCase
     assert_equal order["orderNo"], "100000020732"
     assert_equal order["shipmentList"][0]["productList"][0]["productNo"], "gd4"
   end
+
+  test "orders" do
+    client_stub = stub(Futureshop.client)
+    client_stub.each_order {
+      JSON.parse(File.read(File.join(__dir__, "./fixtures/orders.json")))["orderList"].each
+    }
+    client_stub.order {
+      JSON.parse(File.read(File.join(__dir__, "./fixtures/order.json")))
+    }
+
+    lines = []
+    stub($stdout).<< {|line|
+      lines << line
+    }
+
+    Futureshop.orders(format: "csv")
+    assert_equal lines.length, 21
+  end
 end
