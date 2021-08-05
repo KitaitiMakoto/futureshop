@@ -5,6 +5,8 @@ module Futureshop
   class Error < StandardError; end
 
   class << self
+    attr_writer :client
+
     def orders(format: "json", **options)
       require "csv" if format == "csv"
 

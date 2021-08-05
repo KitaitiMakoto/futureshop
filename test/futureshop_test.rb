@@ -9,10 +9,10 @@ class FutureshopTest < Test::Unit::TestCase
 
   test "client" do
     client = Futureshop::Client.new(
-      shop_key: "cctest21050207",
-      client_id: "fs-client.21e94d721e634b0483e2436bb4c13260",
-      client_secret: "9u6mta9g34u7nc4ec3s432ttedoihuqnrg3v3f3zvzmj1iv7ot69a74dwypuaauu",
-      api_domain: "api.admin.future-shop.net:8083"
+      shop_key: "dummyshopkey",
+      client_id: "fs-client.dummy",
+      client_secret: "dummy",
+      api_domain: "api.admin.future-shop.net"
     )
 
     stub(client).authorize
@@ -32,6 +32,12 @@ class FutureshopTest < Test::Unit::TestCase
   end
 
   test "orders" do
+    Futureshop.client = Futureshop::Client.new(
+      shop_key: "dummyshopkey",
+      client_id: "fs-client.dummy",
+      client_secret: "dummy",
+      api_domain: "api.admin.future-shop.net"
+    )
     client_stub = stub(Futureshop.client)
     client_stub.each_order {
       JSON.parse(File.read(File.join(__dir__, "./fixtures/orders.json")))["orderList"].each
