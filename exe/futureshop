@@ -43,31 +43,4 @@ def orders(global_options, argv)
   Futureshop.orders(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"], format: options["format"])
 end
 
-def client
-  Futureshop::Client.new(
-    shop_key: ENV["FUTURESHOP_SHOP_KEY"],
-    client_id: ENV["FUTURESHOP_CLIENT_ID"],
-    client_secret: ENV["FUTURESHOP_CLIENT_SECRET"],
-    api_domain: ENV["FUTURESHOP_API_DOMAIN"]
-  )
-end
-
-def aggregate_headers(obj, headers = [])
-  obj.each_pair do |key, value|
-    unless %w[buyerInfo addressInfo shippingInfo shipmentList productList].include? key
-      headers << key
-    end
-    case value
-    when Hash
-      headers.concat aggregate_headers(value).collect {|header| "#{key}.#{header}"}
-    when Array
-      sample = value[0]
-      if sample
-        headers.concat aggregate_headers(sample).collect {|header| "#{key}.#{header}"}
-      end
-    end
-  end
-  headers
-end
-
 main ARGV
