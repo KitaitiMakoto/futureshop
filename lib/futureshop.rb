@@ -60,6 +60,8 @@ module Futureshop
               end
             end
           end
+        else
+          raise RuntimeError("unsupported format: #{format}")
         end
       end
     end
