@@ -4,6 +4,6 @@ before_script:
   - gem install bundler -v 2.2.21
   - bundle install
 
-example_job:
+test:
   script:
     - bundle exec rake
