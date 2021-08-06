@@ -40,7 +40,7 @@ def orders(global_options, argv)
     opt.on "--order-date-start=DATE", Time
     opt.on "--order-date-end=DATE", Time
   })
-  Futureshop.orders(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"], format: options["format"])
+  Futureshop.orders(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"], format: options[:format])
 end
 
 main ARGV
