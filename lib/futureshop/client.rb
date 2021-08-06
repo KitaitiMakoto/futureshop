@@ -78,12 +78,12 @@ module Futureshop
       res = get("/admin-api/v1/shipping", params: params)
       yield res["orderList"]
 
-      nextUrl = res["nextUrl"]
-      while nextUrl
+      next_url = res["nextUrl"]
+      while next_url
         sleep INTERVAL
-        res = get(nextUrl, params: params) # TODO: check spec to see whether it's okay to pass params in this form
+        res = get(next_url, params: params) # TODO: check spec to see whether it's okay to pass params in this form
         yield res["orderList"]
-        nextUrl = res["nextUrl"]
+        next_url = res["nextUrl"]
       end
     end
 
