@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- Fix option passing
+- Fix handling of nextUrl
+
 ## [0.1.2] - 2021-08-06
 
 - Fix command-line option name
