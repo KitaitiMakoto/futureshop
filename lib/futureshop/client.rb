@@ -42,10 +42,7 @@ module Futureshop
       }
     end
 
-    def request(method, path = "/", params: {}, data: {})
-      raise "Unsupported method: #{method}" unless [:get, :post].include?(method)
-      query = params.empty? ? nil : build_query(params)
-      uri = URI::HTTPS.build(host: @api_domain, port: @port, path: path, query: query)
+    def request_by_uri(method, uri, data: {})
       request = Net::HTTP.const_get(method.capitalize).new(uri)
       headers.each_pair do |field, value|
         request[field] = value
@@ -54,6 +51,13 @@ module Futureshop
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) {|http| http.request(request)}
       response.value
       JSON.parse(response.body)
+    end
+
+    def request(method, path = "/", params: {}, data: {})
+      raise "Unsupported method: #{method}" unless [:get, :post].include?(method)
+      query = params.empty? ? nil : build_query(params)
+      uri = URI::HTTPS.build(host: @api_domain, port: @port, path: path, query: query)
+      request_by_uri(method, uri, data: data)
     end
 
     def get(path = "/", params: {})
@@ -81,7 +85,8 @@ module Futureshop
       next_url = res["nextUrl"]
       while next_url
         sleep INTERVAL
-        res = get(next_url, params: params) # TODO: check spec to see whether it's okay to pass params in this form
+        url = URI.parse(next_url)
+        res = request_by_uri(:get, url)
         yield res["orderList"]
         next_url = res["nextUrl"]
       end
