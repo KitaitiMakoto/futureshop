@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.1.3] - 2021-08-25
+
 - Fix option passing
 - Fix handling of nextUrl
 
