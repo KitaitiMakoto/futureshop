@@ -55,5 +55,8 @@ class FutureshopTest < Test::Unit::TestCase
     Futureshop.orders(format: "csv")
     ENV.delete "NO_THROTTLE"
     assert_equal lines.length, 21
+
+    csv = CSV.parse(lines.join)
+    assert_equal csv[0].length, csv[1].length
   end
 end

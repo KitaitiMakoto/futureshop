@@ -37,6 +37,7 @@
   "postageCouponDiscountName": "",
   "postageCouponDiscountTotal": 0,
   "couponName": "",
+  "couponList": [],
   "volumeDiscountName": "",
   "volumeDiscountTotal": 0,
   "blackOrder": false,
@@ -63,6 +64,8 @@
   "priorityDiscountTargetPriceStdTax": 555,
   "priorityDiscountTargetPriceReducedTax": 0,
   "sbpsTrackingId": "",
+  "sbpsTrackingId": "",
+  "sbpsAlert": "",
   "buyerInfo": {
     "memberId": "1",
     "lastName": "てすと",
