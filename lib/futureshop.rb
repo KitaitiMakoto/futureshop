@@ -25,33 +25,40 @@ module Futureshop
             raise "Multiple shipmentList. orderNo: #{order["orderNo"]}" if order["shipmentList"].length > 1
             order["shipmentList"].each do |shipment|
               shipment["productList"].each do |product|
-                csv << order.each_value.with_object([]) {|value, values|
+                csv << order.each_pair.with_object([]) {|(key, value), values|
                   case value
                   when Hash
                     value.each_value do |v|
                       values << v
                     end
                   when Array
-                    # only shipmentList is an Array and its length is 0
-                    shipment.each_value do |v|
-                      case v
-                      when Hash
-                        v.each_value do |ov|
-                          values << ov
-                        end
-                      when Array
-                        product.each_pair do |k, v|
-                          case k
-                          when "optionPriceList"
-                            v = v.collect {|optionPrice| "#{optionPrice['name']}:#{optionPrice['selectionName']}(#{optionPrice['price']})"}.join("/")
-                          when "optionList"
-                            v = v.collect {|option| [option["name"], option["selectionItem"]].join(":")}.join(",")
+                    case key
+                    when "shipmentList"
+                      # shipmentList's length is 1
+                      shipment.each_value do |v|
+                        case v
+                        when Hash
+                          v.each_value do |ov|
+                            values << ov
                           end
+                        when Array
+                          product.each_pair do |k, v|
+                            case k
+                            when "optionPriceList"
+                              v = v.collect {|optionPrice| "#{optionPrice['name']}:#{optionPrice['selectionName']}(#{optionPrice['price']})"}.join("/")
+                            when "optionList"
+                              v = v.collect {|option| [option["name"], option["selectionItem"]].join(":")}.join(",")
+                            end
+                            values << v
+                          end
+                        else
                           values << v
                         end
-                      else
-                        values << v
                       end
+                    when "couponList"
+                      values << value.collect {|coupon| [coupon["id"], coupon["name"]].join(":")}.join("/")
+                    else
+                      raise "Unknown array field: #{key}"
                     end
                   else
                     values << value
