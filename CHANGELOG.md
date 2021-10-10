@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.4] - 2021-10-11
+
+- Handle order's couponList field, which was introduced on 2021-09-29
+
 ## [0.1.3] - 2021-08-25
 
 - Fix option passing
