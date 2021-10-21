@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.1.5] - 2021-10-21
+
+- Add `Futureshop::Inventory` class
+- Add `inventories` subcommand
+
 ## [0.1.4] - 2021-10-11
 
 - Handle order's couponList field, which was introduced on 2021-09-29
