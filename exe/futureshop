@@ -4,7 +4,7 @@ require "optparse"
 require "optparse/time"
 require "futureshop"
 
-SUPPORTED_COMMANDS = %w[orders]
+SUPPORTED_COMMANDS = %w[orders inventories]
 
 def main(argv)
   global_options = parse_global_options(argv)
@@ -14,6 +14,8 @@ def main(argv)
   case subcommand
   when "orders"
     orders global_options, argv
+  when "inventories"
+    inventories global_options, argv
   end
 end
 
@@ -41,6 +43,32 @@ def orders(global_options, argv)
     opt.on "--order-date-end=DATE", Time
   })
   Futureshop.orders(order_date_start: options[:"order-date-start"], order_date_end: options[:"order-date-end"], format: options[:format])
+end
+
+def inventories(global_options, argv)
+  require "futureshop/inventory"
+
+  options = {
+    type: ["regular"],
+    product_no: [],
+    jan_code: []
+  }
+  options = options.update(parse_options(argv) {|opt|
+    opt.on "--type=TYPE", Array
+    opt.on "--create-date-start=DATE", Time
+    opt.on "--create-date-end=DATE", Time
+    opt.on "--product-no=NUMBER", Array
+    opt.on "--jan-code=CODE", Array
+  })
+  if options[:type]
+    unknown_types = options[:type].select {|type| ! %w[regular preorder planned realstore].include?(type)}
+    unless unknown_types.empty?
+      raise "Unknown type(s): #{unknown_types.join(', ')}"
+    end
+  end
+  Futureshop::Inventory.each types: options[:type].collect(&:to_sym), create_date_start: options[:"create-date-start"], create_date_end: options[:"create-date-end"], product_no: options[:"product-no"], jan_code: options[:"jan-code"] do |inventory|
+    puts inventory.to_json
+  end
 end
 
 main ARGV
