@@ -21,6 +21,7 @@ Or install it yourself as:
 ## Usage
 
     futureshop orders -fcsv --order-date-start=2016-07-05 --order-date-end=2021-07-20 > orders.2021-07-20.csv
+    futureshop inventories --type=regular,preorder
 
 ## Development
 
