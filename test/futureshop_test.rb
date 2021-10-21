@@ -59,4 +59,19 @@ class FutureshopTest < Test::Unit::TestCase
     csv = CSV.parse(lines.join)
     assert_equal csv[0].length, csv[1].length
   end
+
+  test "inventries" do
+    require "futureshop/inventory"
+    Futureshop.client = Futureshop::Client.new(
+      shop_key: "dummyshopkey",
+      client_id: "fs-client.dummy",
+      client_secret: "dummy",
+      api_domain: "api.admin.future-shop.net"
+    )
+    inventory_stub = stub(Futureshop::Inventory)
+    inventory_stub.all {
+      JSON.parse(File.read(File.join(__dir__, "./fixtures/inventories.json")))["productList"]
+    }
+    assert_equal 100, Futureshop::Inventory.all.length
+  end
 end
