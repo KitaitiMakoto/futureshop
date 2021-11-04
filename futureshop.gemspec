@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "futureshop APIv2 client and tools"
   spec.description   = "futureshop APIv2 client and tools"
   spec.homepage      = "https://gitlab.com/KitaitiMakoto/futureshop"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 2.7.0"
   spec.license       = "AGPL-3.0-or-later"
 
   spec.metadata["homepage_uri"] = spec.homepage
