@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 - Change required Ruby version from 3.0.0 to 2.7.0
+- Complete command options
 
 ## [0.1.5] - 2021-10-21
 
