@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.7] - 2022-06-13
+
+- Remove couponList.id and couponList.name fields from orders CSV output
+
 ## [0.1.6] - 2021-11-04
 
 - Change required Ruby version from 3.0.0 to 2.7.0
