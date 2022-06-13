@@ -93,6 +93,7 @@ module Futureshop
         when Hash
           headers.concat aggregate_headers(value).collect {|header| "#{key}.#{header}"}
         when Array
+          next if key == "couponList"
           sample = value[0]
           if sample
             headers.concat aggregate_headers(sample).collect {|header| "#{key}.#{header}"}
